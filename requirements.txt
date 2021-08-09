@@ -5,4 +5,4 @@ uvicorn
 bcrypt
 PyJWT
 alembic
-
+requests==2.26.0

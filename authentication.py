@@ -26,9 +26,9 @@ class Auth:
         return encoded_jwt
 
     @staticmethod
-    def verify_token(token):
+    def verify_token(access_token):
         try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
             return payload['data']
         except jwt.ExpiredSignatureError:
             raise HTTPException(status_code=401, detail='Token expired')

@@ -24,19 +24,22 @@ async def login_user(user: schemas.UserAuthenticate):
             return {"access_token": access_token}
 
 
-@app.post("/signup", response_model=schemas.User)
+@app.post("/signup", response_model=schemas.SignUpUser, status_code=201)
 async def signup(user: schemas.UserAuthenticate):
     db_user = await UserController.get_user_by_email(email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="User with this email already registered")
-    return await UserController.create_user(user=user)
+    user = await UserController.create_user(user=user)
+    user_data = schemas.User.from_orm(user).dict()
+    user_data["access_token"] = auth_handler.encode_token(user.email)
+    return user_data
 
 
 @app.get("/users/{email}", response_model=schemas.User)
 async def get_user_by_email(email: str, access_token: schemas.AuthToken = Depends(auth_handler.verify_token)):
     db_user = await UserController.get_user_by_email(email=email)
     if not db_user:
-        raise HTTPException(status_code=400, detail="There is no user with this email")
+        raise HTTPException(status_code=404, detail="There is no user with this email")
     return db_user
 
 
@@ -46,7 +49,7 @@ async def get_users(skip: int = 0, limit: int = 100):
     return users
 
 
-@app.post("/users/{user_id}/posts/", response_model=schemas.Post)
+@app.post("/users/{user_id}/posts/", response_model=schemas.Post, status_code=201)
 async def create_post_for_user(
     user_id: int, post: schemas.PostCreate, access_token: schemas.AuthToken = Depends(auth_handler.verify_token)
 ):
@@ -65,14 +68,14 @@ async def get_all_posts(skip: int = 0, limit: int = 100):
     return posts
 
 
-@app.post("/posts/{post_id}/like", response_model=schemas.Post)
+@app.patch("/posts/{post_id}/like", response_model=schemas.Post, status_code=200)
 async def like_posts(
         post_id: int, access_token: schemas.AuthToken = Depends(auth_handler.verify_token)
 ):
     return await PostController.like_post(post_id)
 
 
-@app.post("/posts/{post_id}/dislike", response_model=schemas.Post)
+@app.patch("/posts/{post_id}/dislike", response_model=schemas.Post, status_code=200)
 async def dislike_posts(
         post_id: int, access_token: schemas.AuthToken = Depends(auth_handler.verify_token)
 ):

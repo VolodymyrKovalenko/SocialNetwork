@@ -32,7 +32,7 @@ class UserAuthenticate(UserBase):
 
 class User(UserBase):
     id: int
-    items: List[Post] = []
+    posts: List[Post] = []
 
     class Config:
         orm_mode = True
@@ -40,3 +40,7 @@ class User(UserBase):
 
 class AuthToken(BaseModel):
     access_token: str
+
+
+class SignUpUser(User, AuthToken):
+    pass

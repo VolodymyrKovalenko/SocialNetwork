@@ -24,15 +24,11 @@ class UserController:
 
     @staticmethod
     async def create_user(user: schemas.UserAuthenticate):
-        try:
-            hashed_password = Auth.encode_password(user.password)
-            db_user = User(email=user.email, hashed_password=hashed_password)
-            db.add(db_user)
-            db.commit()
-            return db_user
-        except:
-            error_msg = 'Failed to signup user'
-            return error_msg
+        hashed_password = Auth.encode_password(user.password)
+        db_user = User(email=user.email, hashed_password=hashed_password)
+        db.add(db_user)
+        db.commit()
+        return db_user
 
     @staticmethod
     async def check_user_password(user: schemas.UserAuthenticate):
