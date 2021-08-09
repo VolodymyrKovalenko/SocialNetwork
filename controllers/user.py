@@ -39,4 +39,3 @@ class UserController:
     async def get_posts_by_user(user_id: int):
         user = db.query(User).filter(User.id == user_id).first()
         return user.posts
-

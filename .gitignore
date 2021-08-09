@@ -130,3 +130,6 @@ dmypy.json
 
 controllers/__pycache__/
 models/__pycache__/
+/alembic.ini
+/SocialNetwork.db
+/.idea/

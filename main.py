@@ -80,6 +80,3 @@ async def dislike_posts(
         post_id: int, access_token: schemas.AuthToken = Depends(auth_handler.verify_token)
 ):
     return await PostController.dislike_post(post_id)
-
-
-

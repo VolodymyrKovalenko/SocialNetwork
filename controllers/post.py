@@ -33,4 +33,3 @@ class PostController:
         post.disliked += 1
         db.commit()
         return post
-
